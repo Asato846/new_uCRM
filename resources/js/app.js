@@ -15,6 +15,7 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue, Ziggy)
+            .component('ApplicationLogo', ApplicationLogo)
             .mount(el);
     },
     progress: {
