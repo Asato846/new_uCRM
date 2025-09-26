@@ -21,9 +21,18 @@ use App\Http\Controllers\PurchaseController;
 Route::resource('items', ItemController::class)
 	->middleware(['auth', 'verified']);
 
-Route::resource('purchases', PurchaseController::class)
-        ->middleware(['auth', 'verified']);
+Route::middleware(['auth', 'verified'])->group(function () {
 
+    Route::controller(PurchaseController::class)->group(function () {
+        Route::get('/purchases', 'index')->name('purchases.index');
+        Route::post('/purchases', 'store')->name('purchases.store');
+        Route::get('/purchasese', 'show')->name('purchases.show');
+        Route::put('/purchases', 'update')->name('purchases.update');
+    });
+
+});
+Route::get('/',[App\Http\Controllers\WelcomeController::class,'index']);
+/*
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -32,7 +41,7 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
-
+*/
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

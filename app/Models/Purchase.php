@@ -8,12 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class Purchase extends Model
 {
     use HasFactory;
-    public function scopeSearchPurchases($query, $input = null)
+    public function scopeSearchPurchases($query)
     {
-        if(!empty($input)){
-		return $query->where('session_id', session()->getId());
-	}
+	    
+	    return $query->where('session_id', session()->getId())
+	                 ->where('purchase_status','0');
     }
+    public function scopeSearchAfterPurchases($query)
+    {
 
+            return $query->where('session_id', session()->getId())
+                         ->where('purchase_status','1');
+    }
+    public function item()
+    {
+        return $this->belongsTo(Item::class);
+    }
     protected $fillable = ['id','session_id','item_id','quantity','purchase_status'];
 }

@@ -19,7 +19,15 @@ class PurchaseController extends Controller
     public function index(Request $request)
     {
         $purchases = Purchase::searchPurchases($request->search)
-        ->select('id','session_id','item_id','quantity','purchase_status','created_at')->paginate(8);
+            ->with('item') // itemテーブルを結合
+            ->get(); // get()でコレクションを取得
+
+        // 合計金額を計算するための処理
+        $purchases = $purchases->map(function ($purchase) {
+            $purchase->subtotal = $purchase->quantity * $purchase->item->price;
+            $purchase->item_name = $purchase->item->name;
+            return $purchase;
+        });
 
         return Inertia::render('Purchases/Index',[
             'purchases' => $purchases
@@ -46,13 +54,13 @@ class PurchaseController extends Controller
     {
 	Purchase::create([
             'session_id' => session()->getId(),
-            'item_id' => $request->id,
+            'item_id' => $request->item_id,
             'quantity' => $request->quantity,
 	    'purchase_status' => 0
         ]);
         return to_route('items.index')
         ->with([
-            'message' =>'カートへ追加しました。',
+            'message' =>'カートに追加しました。',
             'status' =>'success'
         ]);
     }
@@ -63,9 +71,22 @@ class PurchaseController extends Controller
      * @param  \App\Models\Purchase  $purchase
      * @return \Illuminate\Http\Response
      */
-    public function show(Purchase $purchase)
+    public function show(Request $request)
     {
-        //
+        $purchases = Purchase::searchAfterPurchases($request->search)
+            ->with('item') // itemテーブルを結合
+            ->get(); // get()でコレクションを取得
+
+        // 合計金額を計算するための処理
+        $purchases = $purchases->map(function ($purchase) {
+            $purchase->subtotal = $purchase->quantity * $purchase->item->price;
+            $purchase->item_name = $purchase->item->name;
+            return $purchase;
+        });
+
+        return Inertia::render('Purchases/Show',[
+            'purchases' => $purchases
+        ]);
     }
 
     /**
@@ -86,10 +107,24 @@ class PurchaseController extends Controller
      * @param  \App\Models\Purchase  $purchase
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePurchaseRequest $request, Purchase $purchase)
+    public function update(UpdatePurchaseRequest $request)
     {
-        //
+        $ids = $request->input('ids');
+
+        // IDが空でないことを確認し、該当するレコードを更新
+        if (!empty($ids)) {
+            Purchase::whereIn('id', $ids)
+                    ->update(['purchase_status' => 1]);
+        }
+
+        // 更新後、元のページにリダイレクト
+        return to_route('items.index')
+            ->with([
+                'message' => '商品を購入しました。ありがとうございます。',
+                'status' => 'success'
+            ]);
     }
+    
 
     /**
      * Remove the specified resource from storage.

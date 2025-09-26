@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->string('memo')->nullable();
             $table->integer('price');
             $table->boolean('is_selling')->default(true);
-            $table->string('image_id');
+            $table->string('image_id')->nullable();
             $table->timestamps();
         });
     }

@@ -2,15 +2,16 @@
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     import { Head } from '@inertiajs/inertia-vue3';
     import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
-    import { router, useForm } from '@inertiajs/vue3';
-    import { Inertia } from '@inertiajs/inertia';
+    import { useForm } from '@inertiajs/vue3';
 
     const props = defineProps({
-        item : Object
+        item : Object,
+	errors: Object
     })
 
     const form = useForm({
-        id: props.item.id,
+        _method: 'put',
+	id: props.item.id,
         name: props.item.name,
         author: props.item.author,
         memo: props.item.memo,
@@ -20,7 +21,7 @@
     })
 
     const updateItem = id => {
-       Inertia.put(route('items.update', { item: id }), form)
+        form.post(route('items.update', { item: form.id }))
     }
 
 </script>
@@ -39,10 +40,10 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
-                        <BreezeValidationErrors class="mb-4" />
+                        <BreezeValidationErrors :errors="errors"/>
                         <section class="text-gray-600 body-font relative">
 
-                            <form @submit.prevent="updateItem(form.id)" enctype="multipart/form-data">
+                            <form @submit.prevent="updateItem" enctype="multipart/form-data">
                                 <div class="container px-5 py-8 mx-auto">
 
                                     <div class="lg:w-1/2 md:w-2/3 mx-auto">

@@ -66,30 +66,41 @@ class ItemController extends Controller
      */
     public function store(StoreItemRequest $request)
     {
-        $disk = Storage::build([
-                'driver' => 'local',
-                'root' => public_path('images'),
-            ]);
+	$validatedData = $request->validated(); 
+        if ($request->hasFile('file')) {
+           $disk = Storage::build([
+               'driver' => 'local',
+               'root' => public_path('images'),
+           ]);
 
-        $hoge = date('YmdHis') . '.png';
-        $disk->putFileAs('', $request->file('file'), $hoge);
+           $hoge = date('YmdHis') . '.png';
+           $disk->putFileAs('', $request->file('file'), $hoge);
 
-         Item::create([
-            'name' => $request->name,
-            'author' => $request->author,
-            'memo' => $request->memo,
-            'price' => $request->price,
-            'image_id' => $hoge
-        ]);
+           // ファイル名（$hoge）をDBに保存
+           Item::create([
+               'name' => $request->name,
+               'author' => $request->author,
+               'memo' => $request->memo,
+               'price' => $request->price,
+               'image_id' => $hoge // ここにファイル名をセット
+           ]);
+       } else {
+           // ファイルが存在しない場合は、'image_id'をnullとしてDBに保存
+           Item::create([
+               'name' => $request->name,
+               'author' => $request->author,
+               'memo' => $request->memo,
+               'price' => $request->price,
+               'image_id' => null
+           ]);
+       }
 
-        return to_route('items.index')
-        ->with([
-            'message' => '登録しました。',
-            'status' => 'success'
-        ]);
-        
+       return to_route('items.index')
+           ->with([
+               'message' => '登録が完了しました。',
+               'status' => 'success'
+           ]);
     }
-
     /**
      * Display the specified resource.
      *

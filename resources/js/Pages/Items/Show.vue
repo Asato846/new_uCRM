@@ -17,9 +17,9 @@ const props = defineProps({
     item: Object
 })
 
-const form = reactive({
+const form = useForm({
   item_id: props.item.id,
-  quantity: props.item.quantity,
+  quantity: 1,
   is_selling: props.item.is_selling
 })
 
@@ -45,7 +45,7 @@ const purchaseItem = id => {
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
                         <section class="text-gray-600 body-font overflow-hidden">
-		        <form @submit.prevent="purchaseItem(form.id)">
+		        <form @submit.prevent="form.post(route('purchases.store'))">
                             <div class="container px-5 py-24 mx-auto">
                                 <div class="lg:w-4/5 mx-auto flex flex-wrap">
                                     <img alt="ecommerce"
@@ -88,7 +88,7 @@ const purchaseItem = id => {
                                             <span class="title-font font-medium text-2xl text-gray-900">&yen{{
                                                 item.price.toLocaleString() }}</span>
 
-                                            <button @click="form.post(route('purchases.store'))"
+                                            <button type="submit"
                                                 class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">購入する</button>
                                         </div>
                                     </div>

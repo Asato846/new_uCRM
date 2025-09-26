@@ -155,7 +155,7 @@ return [
 
     'attributes' => [
       'password' => 'パスワード',
-      'name' => '名',
+      'name' => '商品名',
       'title' => '件名',
       'content' => '本文',
       'gender' => '性別',
@@ -163,14 +163,16 @@ return [
       'contact' => 'お問い合わせ内容',
       'caution' => '注意事項',
       'memo' =>'メモ',
-      'price' =>'料金',
+      'price' =>'商品価格',
       'kana' => 'カナ',
       'tel' => '電話番号',
       'email' => 'メールアドレス',
       'postcode' => '郵便番号',
       'address' => '住所',
       'birthday' => '誕生日',
-      'gender' => '性別'
+      'gender' => '性別',
+      'author' => '著書名',
+
     ],
 
 ];
