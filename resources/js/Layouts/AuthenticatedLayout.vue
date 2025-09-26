@@ -20,17 +20,26 @@ const showingNavigationDropdown = ref(false);
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('dashboard')">
+                                <Link :href="route('items.index')">
                                     <ApplicationLogo
-                                        class="block h-9 w-auto fill-current text-gray-800"
+                                        class="block w-20"
                                     />
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
+                               <NavLink :href="route('items.index')" :active="route().current('items.index')">
+                                    商品一覧
+                                </NavLink>
+                               <NavLink :href="route('items.create')" :active="route().current('items.create')" v-if="$page.props.auth.user.name === 'root'" >
+                                    商品登録
+                                </NavLink>
+			       <NavLink :href="route('purchases.index')" :active="route().current('purchases.index')">
+                                    カート
+                                </NavLink>
+				<NavLink :href="route('purchases.show')" :active="route().current('purchases.show')">
+                                    購入履歴
                                 </NavLink>
                             </div>
                         </div>
@@ -112,8 +121,17 @@ const showingNavigationDropdown = ref(false);
                     class="sm:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
+			<ResponsiveNavLink :href="route('items.index')" :active="route().current('items.index')">
+                           商品一覧
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('items.create')" :active="route().current('items.create')" v-if="$page.props.auth.user.name === 'root'">
+                           商品登録
+                        </ResponsiveNavLink>
+			<ResponsiveNavLink :href="route('purchases.index')" :active="route().current('purchases.index')">
+                           カート
+                        </ResponsiveNavLink>
+			<ResponsiveNavLink :href="route('purchases.show')" :active="route().current('purchases.show')">
+                           購入履歴
                         </ResponsiveNavLink>
                     </div>
 
